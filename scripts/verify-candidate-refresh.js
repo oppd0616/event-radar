@@ -1,0 +1,15 @@
+const assert = require('assert')
+const { candidateRefresh } = require('../cloudfunctions/fetchEvents/lib/candidate-refresh')
+const now = Date.parse('2026-09-26T12:00:00+08:00')
+const base = { candidate: {title:'新活动'}, now, completed:false, obsolete:false, retryCount:3 }
+assert.strictEqual(candidateRefresh(base).terminal,false)
+assert.strictEqual(candidateRefresh(base).nextCheckAt, now + 7 * 86400000)
+assert.strictEqual(candidateRefresh({...base,obsolete:true}).nextCheckAt,0)
+assert.strictEqual(candidateRefresh({...base,completed:true}).terminal,true)
+assert.strictEqual(candidateRefresh({...base,candidate:{suggestedStartTime:'2026-10-01'}}).nextCheckAt,now + 2 * 86400000)
+const { inferModes, expectedStageKeys } = require('../cloudfunctions/fetchEvents/lib/detail-modes')
+const items = [{description:'开发者大会，欢迎参会\n相关推荐\n考试科目及准考证\n小组赛和淘汰赛'}]
+assert.deepStrictEqual(inferModes(items,{title:'开发者大会'}),['conference'])
+assert.deepStrictEqual(expectedStageKeys(items),[])
+assert(!inferModes([{description:'笔试筛选后提交作品'}],{title:'AI黑客松'}).includes('exam'))
+console.log('Candidate refresh and activity content verification passed')

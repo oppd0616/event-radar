@@ -1,0 +1,22 @@
+const assert = require('assert')
+const { windowsFromText, windowEndingOn } = require('../cloudfunctions/fetchEvents/lib/submission-window')
+
+const text = '上赛季投稿时间为2026年5月25日至8月5日，获奖公布于8月15日。下赛季投稿时间为2026年8月6日至10月25日，获奖公布于11月18日。'
+const windows = windowsFromText(text, 2026)
+assert.strictEqual(windows.length, 2)
+const selected = windowEndingOn(windows, Date.parse('2026-10-25T23:59:59+08:00'))
+assert(selected)
+assert.strictEqual(selected.season, '下赛季')
+assert.strictEqual(selected.startTime, Date.parse('2026-08-06T00:00:00+08:00'))
+assert.strictEqual(selected.endTime, Date.parse('2026-10-25T00:00:00+08:00'))
+assert.strictEqual(windowEndingOn(windows, Date.parse('2026-11-18T00:00:00+08:00')), null)
+assert.strictEqual(windowEndingOn(windows.concat(windows[1]), Date.parse('2026-10-25T00:00:00+08:00')).startTime, selected.startTime)
+assert.strictEqual(windowEndingOn(windows.concat({ ...selected, startTime: Date.parse('2026-09-01T00:00:00+08:00') }), Date.parse('2026-10-25T00:00:00+08:00')), null)
+assert.deepStrictEqual(windowsFromText('2026年10月25日获奖公布。', 2026), [])
+
+const saved = require('../docs/v21-validation/1789995495142-wsa-detail-probe.json')
+const source = saved.result.items.find((item) => item.url === 'https://cnyisai.com/event/71.html')
+assert(source)
+const liveWindow = windowEndingOn(windowsFromText(source.text, 2026), Date.parse('2026-10-25T23:59:59+08:00'))
+assert(liveWindow && liveWindow.season === '下赛季')
+console.log('Submission window verification passed: separate seasons and source replay')

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "搜索活动",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "loading-state": "/components/loading-state/loading-state",
+    "event-card": "/components/event-card/event-card"
+  }
+}

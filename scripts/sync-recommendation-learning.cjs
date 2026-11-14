@@ -1,0 +1,5 @@
+const fs = require('fs'), path = require('path')
+const root = path.resolve(__dirname, '..')
+const source = fs.readFileSync(path.join(root, 'shared/recommendation-learning.js'))
+for (const name of ['getEvents', 'recordSignal']) fs.writeFileSync(path.join(root, 'cloudfunctions', name, 'recommendation-learning.js'), source)
+console.log('Recommendation learning policy synchronized')

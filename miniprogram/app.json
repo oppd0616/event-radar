@@ -1,0 +1,32 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/onboarding/onboarding",
+    "pages/detail/detail",
+    "pages/subscribe/subscribe",
+    "pages/interest-editor/interest-editor",
+    "pages/follows/follows",
+    "pages/search/search"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTitleText": "活动雷达",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FAFAF8",
+    "backgroundTextStyle": "dark"
+  },
+  "style": "v2",
+  "tabBar": {
+    "custom": true,
+    "color": "#85847E",
+    "selectedColor": "#2C2C2A",
+    "backgroundColor": "#FAFAF8",
+    "list": [
+      { "pagePath": "pages/home/home", "text": "发现" },
+      { "pagePath": "pages/follows/follows", "text": "关注" },
+      { "pagePath": "pages/subscribe/subscribe", "text": "偏好" }
+    ]
+  },
+  "renderer": "webview",
+  "sitemapLocation": "sitemap.json"
+}

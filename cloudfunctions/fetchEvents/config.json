@@ -1,0 +1,10 @@
+{
+  "timeout": 300,
+  "triggers": [
+    {
+      "name": "fetchTimer",
+      "type": "timer",
+      "config": "0 */20 * * * * *"
+    }
+  ]
+}

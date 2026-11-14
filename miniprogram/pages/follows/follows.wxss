@@ -1,0 +1,51 @@
+.follows-page { padding-top:28rpx; }
+.heading-line { display:flex;align-items:center;justify-content:space-between;margin-top:10rpx; }
+.heading-title { font-size:36rpx;font-weight:600;letter-spacing:-1rpx; }
+.heading-bookmark { color:#858BAB;display:flex;align-items:center; }
+.heading-desc { font-size:22rpx;color:#85847E;margin-top:12rpx;line-height:1.7; }
+.filter-bar { margin:28rpx 0 24rpx;display:flex;flex-wrap:wrap;gap:12rpx;align-items:center;justify-content:space-between; }
+.filter-tabs { display:flex;position:relative;padding:0;border-bottom:1rpx solid #EAEAE4; }
+.filter-tab { position:relative;width:180rpx;padding:18rpx 0;font-size:24rpx;color:#85847E;text-align:center;transition:color .2s; }
+.filter-selected { color:#2C2C2A;font-weight:500; }
+.filter-indicator { position:absolute;bottom:-1rpx;left:60rpx;width:60rpx;height:4rpx;border-radius:4rpx;background:#2C2C2A;transition:transform 220ms ease; }
+.indicator-ended { transform:translateX(180rpx); }
+.list-count { font-size:22rpx;color:#95948E; }
+.follow-card { display:flex;background:#FFF;border:1rpx solid #ECECE7;border-radius:20rpx;padding:22rpx 20rpx;margin-bottom:14rpx; }
+.follow-card-hover { background:#FDFDFC; }
+.card-top { display:flex;align-items:center;gap:14rpx; }
+.domain-chip { padding:3rpx 14rpx;border-radius:8rpx;font-size:22rpx; }
+.more-action { color:#8B8C84;width:72rpx;height:64rpx;display:flex;align-items:center;justify-content:center;transition:transform 180ms ease;flex-shrink:0; }
+.bookmark-pressed { transform:scale(.94); }
+.key-status { font-size:20rpx;line-height:1.6;color:#74766D;flex:1;text-align:right; }
+.status-deadline { color:#A5685E; }
+.status-live { color:#73846A; }
+.archive-note { color:#85847E;font-size:20rpx;margin-top:8rpx; }
+.same-date-card { margin-top:-6rpx; }
+.card-title { font-size:29rpx;font-weight:500;line-height:1.5;margin:10rpx 0 12rpx;overflow-wrap:break-word; }
+.event-meta { color:#5F5E5A;font-size:22rpx;line-height:1.6; }
+.event-location { color:#85847E;font-size:22rpx;margin-top:4rpx;line-height:1.6;overflow-wrap:break-word; }
+.phase-strip { margin-top:12rpx;padding-left:12rpx;border-left:2rpx solid #C7CCDA;color:#68708E;font-size:21rpx;line-height:1.6; }
+.next-phase { color:#8A8F9F;margin-top:4rpx; }
+.card-footer { margin-top:8rpx;display:flex;align-items:center;justify-content:space-between;gap:12rpx; }
+.detail-link { color:#77796F;font-size:22rpx; }
+.state-box,.empty-state { text-align:center;padding:80rpx 20rpx;color:#85847E;font-size:26rpx; }
+.empty-symbol { font-size:96rpx;color:#B2B7CB;line-height:1.4; }
+.empty-title { color:#555650;font-size:30rpx;margin-top:20rpx; }
+.empty-copy { font-size:24rpx;line-height:1.8;margin-top:12rpx; }
+.state-button { background:#2C2C2A;color:#FFF;display:inline-block;margin-top:32rpx;font-size:24rpx;padding:0 32rpx;border-radius:40rpx; }
+.state-button::after { border:none; }
+.list-end { text-align:center;font-size:22rpx;color:#95948E;padding:24rpx; }
+.list-retry { color:#68708E; }
+.unavailable { color:#95948E;font-size:24rpx; }
+.agenda-group { margin-top:22rpx; }
+.group-heading { color:#77786F;font-size:23rpx;margin:16rpx 0 14rpx; }
+.date-rail { width:100rpx;flex-shrink:0;margin-right:18rpx;padding-top:4rpx;display:flex;flex-direction:column;align-items:center;border-right:1rpx solid #F0F0EC; }
+.date-month { color:#919188;font-size:20rpx;text-align:center;line-height:1.5; }
+.date-day { color:#52544C;font-size:42rpx;font-weight:500;line-height:1.4;margin-top:2rpx; }
+.date-today { background:#343730;color:#FFF;border-radius:50%;width:64rpx;height:64rpx;line-height:64rpx;text-align:center;margin-top:6rpx; }
+.today-label { font-size:18rpx;color:#73766A;margin-top:6rpx; }
+.agenda-content { flex:1;min-width:0; }
+.archive-toggle { display:flex;align-items:center;justify-content:space-between;padding:24rpx 0;color:#84857C;font-size:23rpx;border-top:1rpx solid #EAEAE4; }
+.agenda-rows { animation:agenda-reveal 180ms ease-out; }
+@keyframes agenda-reveal { from { opacity:.5;transform:translateY(6rpx); } to { opacity:1;transform:translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .filter-indicator,.filter-tab,.more-action { transition:none; } .agenda-rows { animation:none; } }

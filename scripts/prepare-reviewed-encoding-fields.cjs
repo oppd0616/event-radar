@@ -1,0 +1,8 @@
+const fs=require('fs'),path=require('path');
+function decode(x){if(Array.isArray(x))return x.map(decode);if(x&&typeof x==='object'){for(const k of ['$numberLong','$numberInt','$numberDouble'])if(k in x)return Number(x[k]);return Object.fromEntries(Object.entries(x).map(([k,v])=>[k,decode(v)]))}return x}
+const all=decode(JSON.parse(fs.readFileSync('docs/old-data-audit-2026-09-28T03-00-24-600Z/backup.json'))).records;
+const tour=all.find(x=>x._id==='853d22036a9c6b6c01ee2200066fc575'),nbl=all.find(x=>x._id==='935443556a9e65ad072dd589721ed4a2');
+const source={url:'https://huodong.com/event/detail/eyaeQ',rawTitle:'2026不显名巡演第一轮｜南京站 - 1701 Live House - 活动网',tier:'web',authority:50};
+const plans=[{id:tour._id,expectedUpdatedAt:tour.updatedAt,evidence:source,set:{'participationGuide.location':'1701 Live House（南京市雨花台区安德门大街57号楚翘城）','participationGuide.locationSource':source,fieldReview:{reviewedAt:Date.now(),correctedFields:['participationGuide.location'],archivedLocation:tour.participationGuide.location,reason:'按原来源场馆信息修复乱码；页面已标为结束，不推断具体结束时刻。'}}},
+{id:nbl._id,expectedUpdatedAt:nbl.updatedAt,evidence:{url:nbl.source.url,kind:'editorial_only_not_reverified'},set:{'participationGuide.steps':['关注NBL联赛及俱乐部发布的赛程和票务信息',...nbl.participationGuide.steps.slice(1)],fieldReview:{reviewedAt:Date.now(),correctedFields:['participationGuide.steps'],archivedSteps:nbl.participationGuide.steps,reason:'仅把损坏的通用操作提示改写为可读文本，没有新增赛程事实。',remaining:['原来源当前无法访问；新赛季日期和具体主场仍需独立核实']}}}];
+const dir=path.resolve('docs/encoding-field-repair-20260928');fs.mkdirSync(dir,{recursive:true});fs.writeFileSync(path.join(dir,'plan.json'),JSON.stringify(plans,null,2));console.log(JSON.stringify({dir,records:plans.length}));

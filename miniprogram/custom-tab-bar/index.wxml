@@ -1,0 +1,9 @@
+<view class="nav-safe-area">
+  <view class="nav-bar">
+    <view class="nav-indicator {{indicatorInstant ? 'nav-indicator-instant' : ''}}" style="transform:translateX({{indicatorIndex * 100}}%);"></view>
+    <view class="nav-item {{selected === index ? 'nav-item-selected' : ''}}" wx:for="{{list}}" wx:key="path" data-index="{{index}}" bindtap="onTab" hover-class="nav-item-pressed" hover-start-time="0" hover-stay-time="60" aria-role="button" aria-label="{{item.label + (selected === index ? '，已选中' : '')}}">
+      <image class="nav-icon" src="{{selected === index ? item.selectedIcon : item.icon}}" mode="aspectFit" aria-hidden="true" />
+      <text class="nav-label">{{item.label}}</text>
+    </view>
+  </view>
+</view>

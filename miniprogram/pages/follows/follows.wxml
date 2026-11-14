@@ -1,0 +1,46 @@
+<view class="page-container tab-page follows-page">
+  <view class="follow-heading">
+    <view class="heading-line"><text class="heading-title">我的关注</text><view class="heading-bookmark"><t-icon name="bookmark" size="36rpx" /></view></view>
+    <view class="heading-desc">{{summary}}</view>
+  </view>
+  <view class="filter-bar">
+    <view class="filter-tabs">
+      <view class="filter-indicator {{filter === 'ended' ? 'indicator-ended' : ''}}"></view>
+      <view class="filter-tab {{filter === 'all' ? 'filter-selected' : ''}}" data-filter="all" bindtap="onFilter">全部关注</view>
+      <view class="filter-tab {{filter === 'ended' ? 'filter-selected' : ''}}" data-filter="ended" bindtap="onFilter">收藏（已结束）</view>
+    </view>
+    <text class="list-count" wx:if="{{!loading}}">{{total}} 个活动</text>
+  </view>
+  <loading-state wx:if="{{loading}}" kind="agenda" label="正在加载你的关注" />
+  <view wx:elif="{{error}}" class="state-box"><view>{{error}}</view><button class="state-button" bindtap="retry">重新加载</button></view>
+  <view wx:elif="{{!list.length}}" class="empty-state">
+    <view class="empty-symbol"><t-icon name="bookmark" size="64rpx" /></view><view class="empty-title">{{filter === 'ended' ? '还没有已结束的收藏' : '把喜欢的活动留在这里'}}</view>
+    <view class="empty-copy">{{filter === 'ended' ? '关注的活动结束后，会自动收纳到这里' : '发现喜欢的活动先关注，提醒可以在详情页单独开启'}}</view>
+    <button class="state-button" bindtap="explore">去发现活动</button>
+  </view>
+  <block wx:else>
+    <view class="agenda-group" wx:for="{{groups}}" wx:for-item="group" wx:key="key">
+      <view class="group-heading" wx:if="{{group.key !== 'archive' || filter === 'ended'}}">{{group.title}}</view>
+      <view class="archive-toggle" wx:else bindtap="onArchive" aria-role="button" aria-label="{{archiveExpanded ? '收起已结束收藏' : '展开已结束收藏'}}"><text>已结束收藏</text><text>{{archiveExpanded ? '收起 −' : '展开 ＋'}}</text></view>
+      <view class="agenda-rows" wx:if="{{group.key !== 'archive' || filter === 'ended' || archiveExpanded}}">
+        <view class="follow-card {{!item.showDate ? 'same-date-card' : ''}}" wx:for="{{group.rows}}" wx:key="id" data-index="{{item.listIndex}}" bindtap="open" hover-class="follow-card-hover" hover-start-time="20" hover-stay-time="60">
+          <view class="date-rail"><block wx:if="{{item.showDate}}"><text class="date-month">{{item.month}}</text><text class="date-day {{item.isToday ? 'date-today' : ''}}">{{item.day}}</text><text wx:if="{{item.isToday}}" class="today-label">今天</text></block></view>
+          <view class="agenda-content">
+            <view class="card-top"><text class="domain-chip" style="color:{{item.meta.color}};background:{{item.meta.bg}}">{{item.meta.label}}</text><text wx:if="{{item.status}}" class="key-status status-{{item.statusTone}}">{{item.status}}</text></view>
+            <view class="card-title">{{item.title}}</view>
+            <view wx:if="{{item.unavailable}}" class="unavailable">活动暂不可查看，关注记录仍保留</view>
+            <block wx:else>
+              <view class="event-meta">{{item.date}}</view>
+              <view class="event-location">{{item.location}}</view>
+              <view class="archive-note" wx:if="{{item.archiveNote}}">{{item.archiveNote}}</view>
+              <view class="phase-strip" wx:if="{{item.phase || item.next}}"><view wx:if="{{item.phase}}">{{item.phase}}</view><view class="next-phase" wx:if="{{item.next}}">{{item.next}}</view></view>
+            </block>
+            <view class="card-footer"><text class="detail-link" wx:if="{{!item.unavailable}}">详情与参与方式 ›</text><view class="more-action" data-index="{{item.listIndex}}" catchtap="more" hover-class="bookmark-pressed" hover-stop-propagation="{{true}}" hover-start-time="20" hover-stay-time="60" aria-role="button" aria-label="活动更多操作"><t-icon name="ellipsis" size="32rpx" /></view></view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{moreError}}" class="list-end list-retry" bindtap="retryMore" aria-role="button">{{moreError}}</view>
+    <view wx:else class="list-end">{{loadingMore ? '正在加载…' : nextCursor !== null ? '上滑查看更多' : '已显示全部关注'}}</view>
+  </block>
+</view>

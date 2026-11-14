@@ -1,0 +1,35 @@
+# Local secrets, credentials and developer state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+project.private.config.json
+.workbuddy/
+.codex/
+.aws/
+.pnpm-store/
+
+# Dependencies and generated mini-program bundles
+**/node_modules/
+**/miniprogram_npm/
+
+# Runtime data, cloud backups, exports and submission materials
+/output/
+/tmp/
+/docs/
+/database_export*
+/preview-*
+/upload-*
+/*.png
+/*.jpg
+/*.pdf
+/*.docx
+**/runtime/
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db

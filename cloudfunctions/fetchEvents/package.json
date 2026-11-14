@@ -1,0 +1,10 @@
+{
+  "name": "fetchEvents",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "iconv-lite": "^0.6.3",
+    "opencc-js": "1.4.2",
+    "wx-server-sdk": "~3.0.0"
+  }
+}

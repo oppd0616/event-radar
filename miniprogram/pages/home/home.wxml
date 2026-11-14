@@ -1,0 +1,79 @@
+<view class="page-container tab-page">
+  <view class="hd">
+    <view class="hd-left">
+      <view class="hd-kicker">EVENT RADAR</view>
+      <view class="hd-title">近期值得关注</view>
+    </view>
+    <view class="hd-right">
+      <view class="hd-updated">{{updatedText}}</view>
+    </view>
+  </view>
+
+
+  <view class="feed-controls">
+  <view class="tabs-wrap">
+    <t-tabs value="{{activeTab}}" bind:change="onTabChange" space-evenly="{{false}}">
+      <t-tab-panel wx:for="{{tabs}}" wx:key="key" label="{{item.label}}" value="{{item.key}}" />
+    </t-tabs>
+  </view>
+
+  <view class="sort-row">
+    <view class="sort-control">
+      <view class="sort-indicator" style="transform: translateX({{sortIndex * 100}}%);"></view>
+      <view
+        wx:for="{{sortOptions}}"
+        wx:key="key"
+        class="sort-option {{sortMode === item.key ? 'sort-option-active' : ''}}"
+        data-mode="{{item.key}}"
+        bindtap="onSortChange"
+      >{{item.label}}</view>
+    </view>
+    <view class="search-entry" aria-role="button" aria-label="搜索活动" bindtap="onOpenSearch" hover-class="search-entry-pressed" hover-start-time="20" hover-stay-time="60">
+      <view class="search-entry-surface"><view class="search-glyph" aria-hidden="true"><view class="search-glyph-ring"></view><view class="search-glyph-handle"></view></view></view>
+    </view>
+  </view>
+
+  <view wx:if="{{pendingUpdate}}" class="feed-update-anchor"><button class="feed-update-button" bindtap="onApplyFeedUpdate" hover-class="feed-update-pressed" hover-start-time="20" hover-stay-time="60">有新内容，点击更新 ↑</button></view>
+  </view>
+  <loading-state wx:if="{{loading}}" label="正在加载活动" />
+  <view wx:if="{{feedVisible && !loading}}" class="feed-stage">
+
+    <block wx:if="{{error}}">
+      <t-empty description="{{error}}">
+        <t-button slot="action" theme="primary" size="small" custom-style="min-height: 64rpx; border-radius: 16rpx; font-size: 24rpx; font-weight: 600; padding: 0 28rpx;" bind:tap="onRetry">重新加载</t-button>
+      </t-empty>
+    </block>
+
+    <block wx:elif="{{list.length === 0}}">
+      <t-empty description="正在发现真实活动，下拉刷新或稍后再来" />
+    </block>
+
+    <block wx:else>
+      <view wx:for="{{list}}" wx:key="_id" class="feed-card-observer" data-event-id="{{item._id}}">
+      <event-card
+        event="{{item}}"
+        follow-records="{{followRecords}}"
+        follow-busy="{{followBusyId === item._id}}"
+        follow-pulse="{{followPulseId === item._id}}"
+        follow-disabled="{{!!followBusyId}}"
+        meta="{{item._meta}}"
+        countdown-text="{{item._countdownText}}"
+        time-text="{{item._timeText}}"
+        cta-text="{{item._ctaText}}"
+        bind:tap="onCardTap"
+        bind:cta="onCardCta"
+        bind:more="onCardMore"
+        bind:follow="onCardFollow"
+      />
+      </view>
+      <view wx:if="{{loadingMore}}" class="list-end text-weak">正在加载更多活动…</view>
+      <view wx:elif="{{moreError}}" class="list-end list-retry" bindtap="onRetryMore" aria-role="button">{{moreError}}</view>
+      <view wx:elif="{{nextCursor !== null}}" class="list-end text-weak">继续上滑，发现更多活动</view>
+      <view wx:else class="list-end text-weak">已加载全部 · 下拉可刷新</view>
+    </block>
+  </view>
+  <view class="feedback-bar" wx:if="{{feedbackMessage}}">
+    <text>{{feedbackMessage}}</text>
+    <button class="feedback-undo" bindtap="onUndoFeedback" disabled="{{feedbackBusy}}">撤销</button>
+  </view>
+</view>

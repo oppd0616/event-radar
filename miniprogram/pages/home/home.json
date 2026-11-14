@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "活动雷达",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "t-tabs": "tdesign-miniprogram/tabs/tabs",
+    "t-tab-panel": "tdesign-miniprogram/tab-panel/tab-panel",
+    "loading-state": "/components/loading-state/loading-state",
+    "t-empty": "tdesign-miniprogram/empty/empty",
+    "t-button": "tdesign-miniprogram/button/button",
+    "event-card": "/components/event-card/event-card"
+  }
+}

@@ -1,0 +1,28 @@
+<view class="editor-page">
+  <view class="editor-content">
+    <view class="section-title">已选择 <text>{{selectedTopics.length}}</text></view>
+    <view wx:if="{{selectedViews.length}}" class="selected-list">
+      <view wx:for="{{selectedViews}}" wx:key="id" class="selected-chip" data-domain="{{item.domain}}" data-key="{{item.key}}" bindtap="onTopicTap" aria-role="button" aria-label="移除{{item.label}}">
+        <text>{{item.label}}</text><text class="remove-mark">×</text>
+      </view>
+    </view>
+    <view wx:else class="empty-selected">还没有选择具体主题</view>
+
+    <view class="section-title browse-title">添加主题</view>
+    <block wx:if="{{domainTabs.length}}">
+      <scroll-view scroll-x class="domain-tabs"><view class="tab-track">
+        <view wx:for="{{domainTabs}}" wx:key="key" class="domain-tab {{activeDomain === item.key ? 'domain-tab-active' : ''}}" data-domain="{{item.key}}" bindtap="onDomainTap">{{item.label}}</view>
+      </view></scroll-view>
+      <view wx:if="{{activeDomain === 'academic'}}" class="option-heading">专业方向</view>
+      <view wx:if="{{majorOptions.length}}" class="option-list">
+        <view wx:for="{{majorOptions}}" wx:key="key" class="topic-option {{item.selected ? 'topic-option-selected' : ''}}" data-domain="{{item.domain}}" data-key="{{item.key}}" bindtap="onTopicTap" aria-role="button" aria-label="{{item.label + (item.selected ? '，已选择' : '，未选择')}}"><text>{{item.label}}</text><text class="option-check">{{item.selected ? '✓' : ''}}</text></view>
+      </view>
+      <view wx:if="{{activeDomain === 'academic'}}" class="option-heading">竞赛与机会</view>
+      <view class="option-list">
+        <view wx:for="{{otherOptions}}" wx:key="key" class="topic-option {{item.selected ? 'topic-option-selected' : ''}}" data-domain="{{item.domain}}" data-key="{{item.key}}" bindtap="onTopicTap" aria-role="button" aria-label="{{item.label + (item.selected ? '，已选择' : '，未选择')}}"><text>{{item.label}}</text><text class="option-check">{{item.selected ? '✓' : ''}}</text></view>
+      </view>
+    </block>
+    <view wx:else class="empty-domains">请先返回偏好页选择兴趣领域。</view>
+  </view>
+  <view class="save-footer"><button class="save-button" disabled="{{saving || !domainTabs.length}}" bindtap="onSave">{{saving ? '保存中…' : syncPending ? '保存并重新同步' : dirty ? '保存更改' : '完成'}}</button></view>
+</view>

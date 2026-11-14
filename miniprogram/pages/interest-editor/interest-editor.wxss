@@ -1,0 +1,23 @@
+.editor-page { min-height:100vh;background:#FAFAF8;box-sizing:border-box; }
+.editor-content { padding:26rpx 32rpx calc(170rpx + env(safe-area-inset-bottom)); }
+.section-title { font-size:27rpx;font-weight:500;color:#30312E;margin:0 0 18rpx; }
+.section-title text { color:#858EAA;font-weight:400; }
+.selected-list { display:flex;flex-wrap:wrap;gap:12rpx; }
+.selected-chip { display:inline-flex;align-items:center;gap:12rpx;max-width:100%;min-height:62rpx;padding:0 17rpx;border-radius:11rpx;background:#ECEEF5;color:#4D5876;font-size:23rpx;box-sizing:border-box; }
+.remove-mark { color:#8A92AA;font-size:29rpx;line-height:1; }
+.empty-selected { font-size:23rpx;color:#9B9D94;padding:12rpx 0; }
+.browse-title { margin-top:42rpx; }
+.domain-tabs { white-space:nowrap;margin-bottom:20rpx;width:100%; }
+.tab-track { display:inline-flex;gap:12rpx;padding:2rpx 2rpx 10rpx; }
+.domain-tab { display:inline-flex;align-items:center;justify-content:center;min-height:61rpx;padding:0 22rpx;border-radius:11rpx;background:#FFF;color:#74776F;font-size:23rpx;white-space:nowrap; }
+.domain-tab-active { background:#E8EBF4;color:#4C5879;font-weight:500; }
+.option-heading { color:#8C8F86;font-size:22rpx;margin:24rpx 0 12rpx; }
+.option-list { background:#FFF;border-radius:18rpx;overflow:hidden; }
+.topic-option { min-height:88rpx;display:flex;align-items:center;justify-content:space-between;gap:20rpx;margin:0 22rpx;box-sizing:border-box;color:#3D4039;font-size:25rpx; }
+.topic-option + .topic-option { border-top:1rpx solid #EFEFEB; }
+.option-check { flex:none;min-width:27rpx;text-align:center;color:#747F9F;font-size:26rpx; }
+.topic-option-selected { color:#4D5876; }
+.empty-domains { background:#FFF;border-radius:18rpx;padding:32rpx;color:#85877E;font-size:24rpx;line-height:1.7; }
+.save-footer { position:fixed;left:0;right:0;bottom:0;padding:18rpx 32rpx calc(18rpx + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);border-top:1rpx solid #F0F0EC;box-sizing:border-box; }
+.save-button { display:flex;align-items:center;justify-content:center;height:82rpx;background:#30312E!important;color:#FFF!important;border-radius:13rpx;font-size:26rpx;font-weight:500; }
+.save-button::after { border:0; }.save-button[disabled] { opacity:.5; }

@@ -1,0 +1,184 @@
+<view class="page-container" wx:if="{{loading && !event}}">
+  <block wx:if="{{previewEvent}}"><view class="d-head"><view class="chip" style="color:{{previewEvent.meta.color}};background:{{previewEvent.meta.bg}};">{{previewEvent.meta.label}}</view><view class="d-title">{{previewEvent.title}}</view><view class="d-summary">{{previewEvent.date}}{{previewEvent.date && previewEvent.city ? ' · ' : ''}}{{previewEvent.city}}</view></view><view class="detail-pending" aria-label="正在加载活动详情"><view class="detail-pending-line"></view><view class="detail-pending-line detail-pending-short"></view><view class="detail-pending-block"></view></view></block>
+  <loading-state wx:else kind="detail" label="正在加载活动详情" />
+</view>
+<view class="page-container" wx:elif="{{!event && loadError}}"><t-empty description="{{loadError}}"><t-button slot="action" size="small" theme="primary" bind:tap="onRetryDetail">重新加载</t-button></t-empty></view>
+<view class="page-container" wx:elif="{{!event}}"><t-empty description="活动不存在或暂不可查看" /></view>
+<view class="page-container detail-page" wx:if="{{event}}">
+  <view class="d-head">
+    <view class="chip" style="color: {{meta.color}}; background: {{meta.bg}};">{{meta.label}}</view>
+    <view class="d-title">{{event.displayTitle || event.title}}</view>
+    <view class="d-summary">{{event.summary}}</view>
+    <view wx:if="{{event.identityReview.status === 'pending'}}" class="d-summary">来源中的日期存在差异，正在核实；请以主办方最新公告为准。</view>
+    <view class="d-hotwords" wx:if="{{hotKeywords.length}}">
+      <text class="d-hotword" wx:for="{{hotKeywords}}" wx:key="*this">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="d-countdown">
+    <view class="d-countdown-label {{countdownStatusTone === 'ongoing' ? 'd-countdown-label--ongoing' : ''}}">{{showCountdown ? countdownLabel : countdownStatusText}}</view>
+    <view class="d-countdown-value" wx:if="{{showCountdown}}">
+      <t-count-down
+        time="{{remainMs}}"
+        format="DD:HH:mm:ss"
+        split-with-unit="{{true}}"
+        size="large"
+        theme="default"
+        bind:finish="onCountdownFinish"
+      />
+    </view>
+  </view>
+
+  <view class="d-rows d-time-rows">
+    <block wx:for="{{openingRows}}" wx:key="label">
+      <view class="d-row"><text class="d-row-label">{{item.label}}</text><text class="d-row-value">{{item.text}}</text></view>
+      <view class="hairline"></view>
+    </block>
+    <view class="d-row">
+      <text class="d-row-label">{{eventTimeLabel}}</text>
+      <text class="d-row-value">{{timeText}}</text>
+    </view>
+    <block wx:if="{{endText}}">
+      <view class="hairline"></view>
+      <view class="d-row">
+        <text class="d-row-label">活动结束时间</text>
+        <text class="d-row-value">{{endText}}</text>
+      </view>
+    </block>
+    <view class="hairline"></view>
+    <view class="d-row">
+      <text class="d-row-label">{{accessTimeLabel}}</text>
+      <text class="d-row-value {{accessTimePending ? 'd-row-pending' : ''}}">{{accessTimeText}}</text>
+    </view>
+    <block wx:if="{{accessEndText}}">
+      <view class="hairline"></view>
+      <view class="d-row">
+        <text class="d-row-label">{{accessEndLabel}}</text>
+        <text class="d-row-value">{{accessEndText}}</text>
+      </view>
+    </block>
+  </view>
+
+  <view class="d-timeline" wx:if="{{timelineItems.length > 1 || (timelineItems.length && pendingTimelineItems.length)}}">
+    <view class="d-timeline-heading">
+      <view class="d-guide-title">活动进程</view>
+      <text class="d-timeline-caption {{timelineNeedsReview ? 'd-timeline-caption--pending' : ''}}">{{timelineNeedsReview ? '部分节点核实中' : '按时间更新'}}</text>
+    </view>
+    <view class="d-timeline-list">
+      <view class="d-timeline-item d-timeline-item--{{item.state}}" wx:for="{{timelineItems}}" wx:key="key">
+        <view class="d-timeline-rail">
+          <view class="d-timeline-dot"></view>
+          <view class="d-timeline-line" wx:if="{{index < timelineItems.length - 1}}"></view>
+        </view>
+        <view class="d-timeline-content">
+          <view class="d-timeline-main">
+            <text class="d-timeline-name">{{item.name}}</text>
+            <text class="d-timeline-state" wx:if="{{item.stateText}}">{{item.stateText}}</text>
+          </view>
+          <text class="d-timeline-time">{{item.timeText}}</text>
+          <text class="d-timeline-venue" wx:if="{{item.participantsText}}">{{item.participantsText}}</text>
+          <text class="d-timeline-venue" wx:if="{{item.venue}}">{{item.venue}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="d-timeline" wx:if="{{pendingTimelineItems.length}}">
+    <view class="d-timeline-heading">
+      <view class="d-guide-title">待确认日程</view>
+      <text class="d-timeline-caption d-timeline-caption--pending">暂不计入赛程顺序</text>
+    </view>
+    <view class="d-timeline-content" wx:for="{{pendingTimelineItems}}" wx:key="key">
+      <text class="d-timeline-name">{{item.name}}</text>
+      <text class="d-timeline-time">{{item.timeText}}</text>
+      <text class="d-timeline-venue" wx:if="{{item.venue}}">{{item.venue}}</text>
+    </view>
+  </view>
+
+  <view class="d-guide">
+    <view class="d-guide-heading">
+      <view class="d-guide-title">参与方式</view>
+    </view>
+    <view class="d-guide-badges">
+      <text class="d-guide-badge" wx:for="{{participationBadges}}" wx:key="*this">{{item}}</text>
+    </view>
+    <view class="d-guide-rows">
+      <view class="d-guide-row {{item.stacked ? 'd-guide-row--stacked' : ''}}" wx:for="{{participationRows}}" wx:key="label">
+        <text class="d-guide-label">{{item.label}}</text>
+        <view class="d-guide-value-wrap">
+          <text class="d-guide-value">{{item.value}}</text>
+          <text wx:if="{{item.secondary}}" class="d-guide-secondary">{{item.secondary}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="d-guide-links" wx:if="{{participationLinks.length}}">
+      <view class="d-guide-link" wx:for="{{participationLinks}}" wx:key="url" data-url="{{item.url}}" bindtap="copyParticipationLink">
+        <text class="d-guide-label">{{item.label}}</text>
+        <view class="d-guide-link-main">
+          <text class="d-guide-link-value">{{item.value}}</text>
+          <text class="d-guide-link-action">{{item.action}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="d-guide-steps">
+      <view class="d-guide-step" wx:for="{{participationSteps}}" wx:key="*this">
+        <text class="d-guide-index">{{index + 1}}</text>
+        <text class="d-guide-step-text">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="d-guide d-academic" wx:if="{{academicRows.length}}">
+    <view class="d-guide-heading">
+      <view class="d-guide-title">成长价值</view>
+      <text class="d-growth-chip">按专业匹配</text>
+    </view>
+    <view class="d-guide-rows">
+      <view class="d-guide-row {{item.stacked ? 'd-guide-row--stacked' : ''}}" wx:for="{{academicRows}}" wx:key="label">
+        <text class="d-guide-label">{{item.label}}</text>
+        <view class="d-guide-value-wrap">
+          <text class="d-guide-value">{{item.value}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="d-academic-note">实际认定、加分和评奖规则以所在学校及学院当年文件为准</view>
+  </view>
+
+  <view class="d-rows d-source-card">
+    <view class="d-row d-source-row" bindtap="copySource">
+      <text class="d-row-label">信息来源</text>
+      <view class="d-source-main">
+        <text class="d-source-name">{{sourceDisplayName}}</text>
+        <text class="d-source-action">复制</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="d-note text-weak">参与说明根据公开信息整理，重要规则请以官方页面为准</view>
+  <view class="d-note text-weak">关注仅收藏活动，消息提醒需单独开启</view>
+</view>
+
+<view class="d-bottom-bar" wx:if="{{event}}">
+  <view class="d-bottom-tools">
+  <button class="d-tool d-follow-tool {{following ? 'd-follow-tool-active' : ''}}" hover-class="d-tool-active" hover-start-time="20" hover-stay-time="60" aria-label="{{following ? '取消关注' : '关注活动'}}" bindtap="onFollow" disabled="{{followBusy}}">
+    <view class="detail-bookmark {{followPulse ? 'detail-bookmark-pulse' : ''}}"><t-icon name="{{following ? 'bookmark-filled' : 'bookmark'}}" size="30rpx" /></view>
+    <text>{{!followReady ? '重试' : following ? '已关注' : '关注'}}</text>
+  </button>
+  <view class="d-tool" hover-class="d-tool-active" aria-role="button" aria-label="复制参与链接" bindtap="copyLink">
+    <t-icon name="link" size="30rpx" />
+    <text>链接</text>
+  </view>
+  </view>
+  <view class="d-bottom-primary">
+    <t-button
+      theme="primary"
+      size="large"
+      block
+      custom-style="height: 80rpx; border-radius: 40rpx; border-color: #2C2C2A; background: #2C2C2A; font-size: 26rpx; font-weight: 500; padding: 0 24rpx;"
+      bind:tap="onRemind"
+      loading="{{reminding}}"
+      disabled="{{reminding}}"
+    ><view class="d-remind-content" aria-label="开启微信订阅消息提醒"><t-icon name="notification" size="30rpx" /><text class="d-remind-title">开启提醒</text></view></t-button>
+  </view>
+</view>
+

@@ -1,0 +1,26 @@
+<view class="card" hover-class="card-hover" hover-start-time="20" hover-stay-time="60" bindtap="onTap">
+  <view class="card-top">
+    <view class="chip" style="color: {{meta.color}}; background: {{meta.bg}};">{{meta.label}}</view>
+    <view class="card-tools">
+      <view class="countdown {{event.isHot ? 'countdown-hot' : ''}} {{countdownText === '进行中' ? 'countdown-live' : ''}}">{{countdownText}}</view>
+      <view class="more" wx:if="{{showMore}}" hover-class="more-pressed" hover-stop-propagation="{{true}}" hover-start-time="20" hover-stay-time="60" catchtap="onMoreTap" aria-role="button" aria-label="更多操作">···</view>
+    </view>
+  </view>
+  <view class="card-title">{{event.displayTitle || event.title}}</view>
+  <view class="recommend-reason" wx:if="{{event.recommendReason}}">✦ {{event.recommendReason}}</view>
+  <view class="card-sub">{{timeText}} · {{event.participation.note}}</view>
+  <view class="card-bottom">
+    <view class="source">
+      <view class="dot {{event.confidence >= 0.7 ? 'dot-ok' : 'dot-mid'}}"></view>
+      <text class="source-name">{{event.source.name}}</text>
+      <text wx:if="{{event.isHot}}" class="hot-badge">热门</text>
+    </view>
+    <view class="card-actions">
+      <view class="card-follow {{following ? 'card-follow-active' : ''}} {{followBusy ? 'card-follow-busy' : ''}}" hover-class="{{followDisabled || followBusy ? 'none' : 'card-follow-pressed'}}" hover-stop-propagation="{{true}}" hover-start-time="20" hover-stay-time="60" catchtap="onFollowTap" aria-role="button" aria-disabled="{{followDisabled || followBusy}}" aria-label="{{following ? '取消关注' : '关注活动'}}">
+        <view class="bookmark-mark {{followPulse && following ? 'bookmark-mark-pulse' : ''}}"><t-icon name="{{following ? 'bookmark-filled' : 'bookmark'}}" size="30rpx" /></view>
+        <text>{{following ? '已关注' : '关注'}}</text>
+      </view>
+      <view class="cta" hover-class="cta-pressed" hover-stop-propagation="{{true}}" hover-start-time="20" hover-stay-time="60" catchtap="onCtaTap">{{ctaText}}</view>
+    </view>
+  </view>
+</view>

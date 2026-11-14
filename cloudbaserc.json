@@ -1,0 +1,20 @@
+{
+  "envId": "cloud1-d3gm0lbv1392513d1",
+  "functionRoot": "./cloudfunctions",
+  "functions": [
+    {
+      "name": "fetchEvents",
+      "timeout": 300
+    },
+    {
+      "name": "getEvents"
+    },
+    {
+      "name": "manageFollows",
+      "timeout": 60
+    },
+    {
+      "name": "sendSubscribeMessages"
+    }
+  ]
+}

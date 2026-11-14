@@ -1,0 +1,48 @@
+<view class="search-page">
+  <view class="search-header">
+    <view class="search-bar {{inputFocused ? 'search-bar-focused' : ''}}">
+      <view class="search-mark" aria-hidden="true"><view class="search-mark-ring"></view><view class="search-mark-handle"></view></view>
+      <input class="search-input" value="{{input}}" maxlength="80" placeholder="搜索活动、兴趣或城市" placeholder-class="input-placeholder" confirm-type="search" bindinput="onInput" bindconfirm="onSubmit" bindfocus="onFocus" bindblur="onBlur" />
+      <view wx:if="{{input}}" class="clear" bindtap="onClear" hover-class="pressed" aria-role="button" aria-label="清空搜索"><t-icon name="close-circle-filled" size="17" /></view>
+    </view>
+    <view class="submit {{!input ? 'submit-muted' : ''}}" bindtap="onSubmit" hover-class="pressed" aria-role="button">搜索</view>
+  </view>
+  <view wx:if="{{input !== query && input}}" class="suggestions">
+    <view class="suggestion-heading">相关活动</view>
+    <view wx:if="{{suggestionsLoading}}" class="hint">正在查找…</view>
+    <view wx:if="{{suggestionsError}}" class="hint">{{suggestionsError}}</view>
+    <view wx:for="{{suggestions}}" wx:key="_id" class="suggestion" data-id="{{item._id}}" bindtap="onPreviewTap" hover-class="row-pressed" hover-start-time="0" hover-stay-time="60">
+      <view class="preview-marker" aria-hidden="true"></view>
+      <view class="suggestion-body"><view class="suggestion-title">{{item.title}}</view><view wx:if="{{item._previewMeta || item._previewStatus}}" class="preview-meta"><text>{{item._previewMeta}}</text><text wx:if="{{item._previewStatus}}" class="preview-status">{{item._previewStatus}}</text></view></view>
+      <t-icon name="chevron-right" size="15" />
+    </view>
+    <view class="suggestion search-all" data-query="{{input}}" bindtap="onChoose" hover-class="row-pressed"><text>查看“{{input}}”的全部结果</text><t-icon name="arrow-right" size="17" /></view>
+  </view>
+  <view wx:if="{{!query && !input}}" class="landing">
+    <view wx:if="{{history.length}}" class="section">
+      <view class="section-head"><text>最近搜索</text><view class="history-actions"><view wx:if="{{historyEditing}}" bindtap="onClearHistory" class="subtle-action">清空</view><view bindtap="onManageHistory" class="subtle-action">{{historyEditing ? '完成' : '管理'}}</view></view></view>
+      <view class="chips"><view wx:for="{{history}}" wx:key="*this" class="history-chip" hover-class="row-pressed"><text data-query="{{item}}" bindtap="onChoose">{{item}}</text><view wx:if="{{historyEditing}}" class="delete" data-query="{{item}}" catchtap="onDeleteHistory" aria-role="button" aria-label="删除此搜索"><t-icon name="close" size="12" /></view></view></view>
+    </view>
+    <view class="section"><view class="section-head"><text>试试搜索</text><text class="section-caption">从兴趣出发</text></view><view class="prompt-grid"><view wx:for="{{prompts}}" wx:key="*this" class="prompt" data-query="{{item}}" bindtap="onChoose" hover-class="row-pressed"><text>{{item}}</text><t-icon name="arrow-left-up" size="15" /></view></view></view>
+    <view class="landing-note">活动名称 · 兴趣关键词 · 城市<view class="landing-note-sub">多个关键词用空格分开，如「黑客松 上海」</view></view>
+  </view>
+  <block wx:if="{{query && input === query}}">
+    <view class="search-trail"><block wx:for="{{conditions}}" wx:key="key"><text wx:if="{{index > 0}}" class="trail-separator">/</text><view class="trail-token {{item.key === 'query' ? 'trail-query' : ''}}" data-key="{{item.key}}" bindtap="onRemoveCondition" hover-class="row-pressed" aria-role="button" aria-label="移除{{item.label}}条件"><text class="trail-label">{{item.label}}</text><t-icon name="close" size="11" /></view></block></view>
+    <view class="result-toolbar"><view class="sort"><view class="sort-item {{sortMode === 'relevance' ? 'selected' : ''}}" data-mode="relevance" bindtap="onSort">相关</view><view class="sort-item {{sortMode === 'time' ? 'selected' : ''}}" data-mode="time" bindtap="onSort">时间</view></view><view wx:if="{{!loading && !error}}" class="count">{{total}} 个活动</view></view>
+    <view class="filters">
+      <picker range="{{cities}}" value="{{cityIndex || 0}}" bindchange="onCity"><view class="filter {{city ? 'filter-active' : ''}}">{{city || '全部城市'}}<t-icon name="chevron-down" size="13" /></view></picker>
+      <picker range="{{periods}}" value="{{period === 'week' ? 1 : period === 'month' ? 2 : period === 'custom' ? 3 : 0}}" bindchange="onPeriod"><view class="filter {{period ? 'filter-active' : ''}}">{{period === 'week' ? '本周' : period === 'month' ? '未来30天' : period === 'custom' ? '自定义日期' : '不限时间'}}<t-icon name="chevron-down" size="13" /></view></picker>
+      <view class="filter ended {{includeEnded ? 'filter-active' : ''}}" bindtap="onToggleEnded" hover-class="row-pressed" aria-role="checkbox" aria-checked="{{includeEnded}}"><t-icon name="{{includeEnded ? 'check-circle-filled' : 'check-circle'}}" size="14" />含已结束</view>
+    </view>
+    <view wx:if="{{period === 'custom'}}" class="date-row"><picker mode="date" value="{{dateFrom}}" data-field="dateFrom" bindchange="onDate"><view>{{dateFrom || '开始日期'}}<t-icon name="calendar" size="15" /></view></picker><text class="date-divider">—</text><picker mode="date" value="{{dateTo}}" data-field="dateTo" bindchange="onDate"><view>{{dateTo || '结束日期'}}<t-icon name="calendar" size="15" /></view></picker></view>
+    <view wx:if="{{period === 'custom' && (!dateFrom || !dateTo)}}" class="hint">请选择开始和结束日期</view>
+    <loading-state wx:elif="{{loading && !list.length}}" label="正在搜索活动" />
+    <view wx:elif="{{error}}" class="empty"><view class="empty-symbol"><t-icon name="wifi-no" size="28" /></view><view class="empty-title">暂时没能完成搜索</view><view class="empty-description">{{error}}</view><view class="retry" bindtap="onRetry" hover-class="pressed">重新搜索</view></view>
+    <block wx:else>
+      <view wx:if="{{loading}}" class="refresh-hint">正在更新筛选结果，以下为上次结果…</view>
+      <view wx:if="{{!list.length}}" class="empty"><view class="empty-symbol"><t-icon name="search" size="28" /></view><view class="empty-title">暂时没有找到相关活动</view><view class="empty-description">换个关键词，或放宽城市与时间范围</view><view wx:if="{{city || period || includeEnded}}" class="retry" bindtap="onResetFilters" hover-class="pressed">清除筛选</view></view>
+      <view class="results {{loading ? 'results-updating' : ''}}"><view wx:for="{{list}}" wx:key="_id" class="result-card {{item._enter ? 'result-card-enter' : ''}}" style="animation-delay: {{item._enterDelay}}ms;"><event-card event="{{item}}" meta="{{item._meta}}" time-text="{{item._time}}" countdown-text="{{item._countdown}}" cta-text="{{item._cta}}" show-more="{{false}}" follow-records="{{followRecords}}" follow-busy="{{followBusyId === item._id}}" follow-pulse="{{followPulseId === item._id}}" follow-disabled="{{!!followBusyId || loading}}" bind:tap="onCardTap" bind:cta="onCardTap" bind:follow="onCardFollow" /></view></view>
+      <view wx:if="{{loadingMore}}" class="hint">加载更多…</view><view wx:elif="{{moreError}}" class="retry" bindtap="onMore">{{moreError}}</view><view wx:elif="{{list.length && nextCursor === null}}" class="list-end"><view></view><text>已展示全部结果</text><view></view></view>
+    </block>
+  </block>
+</view>

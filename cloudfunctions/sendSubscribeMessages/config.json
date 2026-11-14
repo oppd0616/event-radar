@@ -1,0 +1,18 @@
+{
+  "timeout": 60,
+  "envVariables": {
+    "SUBSCRIBE_TEMPLATE_ID": "fhWKMrhFeJEnXj5lY1zxFZeK185MlvM7o8e_2-ASgh0"
+  },
+  "permissions": {
+    "openapi": [
+      "subscribeMessage.send"
+    ]
+  },
+  "triggers": [
+    {
+      "name": "pushTimer",
+      "type": "timer",
+      "config": "0 */10 * * * * *"
+    }
+  ]
+}

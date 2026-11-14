@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "偏好与提醒",
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button"
+  }
+}

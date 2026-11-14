@@ -1,0 +1,74 @@
+<view class="page-container tab-page preference-page">
+  <view class="interest-header">
+    <view><view class="interest-title">我的兴趣</view><view class="interest-subtitle">决定发现页更先出现什么</view></view>
+    <view class="edit-link" bindtap="onToggleDomainEdit" aria-role="button">{{editingDomains ? '取消' : '编辑'}}</view>
+  </view>
+  <view class="interest-surface">
+    <block wx:if="{{!editingDomains}}">
+      <view wx:if="{{selectedDomains.length}}" class="interest-chips">
+        <view wx:for="{{selectedDomains}}" wx:key="key" class="interest-chip"><image class="preference-domain-icon" src="{{item.icon}}" mode="aspectFit" aria-hidden="true" /><text>{{item.label}}</text></view>
+      </view>
+      <view wx:else class="empty-interests">还没有选择领域，点“编辑”添加。</view>
+    </block>
+    <block wx:else>
+      <view class="editor-label">选择领域</view>
+      <view class="interest-chips editor-chips">
+        <view wx:for="{{domains}}" wx:key="key" class="interest-chip editor-chip {{item.weight > 0 ? 'chip-selected' : ''}} {{activeEditDomain === item.key ? 'chip-active' : ''}}" data-key="{{item.key}}" bindtap="onEditDomainTap" hover-class="editor-chip-pressed" hover-start-time="20" hover-stay-time="60" aria-role="button" aria-label="{{item.label + (item.weight > 0 ? '，已选择' : '，未选择')}}"><image class="preference-domain-icon" src="{{item.icon}}" mode="aspectFit" aria-hidden="true" /><text>{{item.label}}</text></view>
+      </view>
+      <view class="strength-editor">
+        <view class="strength-heading">{{activeEditLabel}}的推荐强度</view>
+        <view class="strength-options">
+          <view class="strength-indicator" style="transform:translateX({{activeEditWeight * 100}}%);" aria-hidden="true"></view>
+          <view data-weight="0" bindtap="onSelectWeight" class="strength-option {{activeEditWeight === 0 ? 'strength-active' : ''}}">不选择</view>
+          <view data-weight="1" bindtap="onSelectWeight" class="strength-option {{activeEditWeight === 1 ? 'strength-active' : ''}}">一般</view>
+          <view data-weight="2" bindtap="onSelectWeight" class="strength-option {{activeEditWeight === 2 ? 'strength-active' : ''}}">喜欢</view>
+          <view data-weight="3" bindtap="onSelectWeight" class="strength-option {{activeEditWeight === 3 ? 'strength-active' : ''}}">优先</view>
+        </view>
+      </view>
+      <view class="editor-note">取消领域后，相关细分兴趣会一同移除。</view>
+      <view class="save-area">
+        <t-button block theme="primary" custom-style="height:76rpx;border-radius:12rpx;font-size:26rpx;background:#30312E;border-color:#30312E;" bind:tap="onSave" loading="{{saving}}" disabled="{{saving || saveState !== 'dirty' && saveState !== 'local'}}">{{saveState === 'local' ? '重新同步偏好' : '保存更改'}}</t-button>
+      </view>
+    </block>
+  </view>
+  <view wx:if="{{saveState === 'local' && !editingDomains}}" class="sync-note" bindtap="onSave">偏好仅保存在本机，点击重新同步</view>
+
+  <view class="section-heading"><text>细分兴趣</text><text wx:if="{{topicPreview.length}}" class="edit-link" bindtap="onEditInterests">编辑</text></view>
+  <view class="topic-surface">
+    <view wx:if="{{topicPreview.length}}" class="topic-chips">
+      <text wx:for="{{topicPreview}}" wx:key="key" class="topic-chip">{{item.label}}</text>
+      <text wx:if="{{topicOverflow}}" class="topic-more">还有 {{topicOverflow}} 个</text>
+      <text class="topic-add" bindtap="onEditInterests" aria-role="button">＋ 添加</text>
+    </view>
+    <view wx:else class="empty-topics" bindtap="onEditInterests" aria-role="button">＋ 添加感兴趣的主题</view>
+  </view>
+
+  <view class="section-heading">提醒</view>
+  <view class="settings-group">
+    <button class="setting-row action-row" bindtap="onSubscribeAll" disabled="{{subscribing}}" hover-class="row-pressed" hover-start-time="20" hover-stay-time="60"><text class="row-title">{{subscribing ? '正在开启…' : '开启新活动提醒'}}</text><text class="chevron">›</text></button>
+    <view class="setting-row" bindtap="onToggleReminders" hover-class="row-pressed" hover-start-time="20" hover-stay-time="60" aria-role="button" aria-expanded="{{remindersExpanded}}"><text class="row-title">提醒记录</text><text class="row-value">{{subscriptionsLoading ? '读取中' : subscriptionsError ? '读取失败' : '剩余 ' + reminderQuota + ' 次'}}</text><text class="chevron {{remindersExpanded ? 'chevron-open' : ''}}">›</text></view>
+    <view wx:if="{{remindersExpanded}}" class="record-list">
+      <view wx:if="{{subscriptionsError}}" class="record-message retry" bindtap="loadSubscriptions">读取失败，点击重试</view>
+      <view wx:elif="{{subscriptionsLoading}}" class="record-message">正在读取…</view>
+      <block wx:elif="{{subscriptions.length}}"><view wx:for="{{subscriptions}}" wx:key="_id" class="record-row"><text class="record-title">{{item.label}}</text><text class="record-value">{{item.status === 'active' && item.remainCount > 0 ? item.remainCount + ' 次' : '已用完或未激活'}}</text></view></block>
+      <view wx:else class="record-message">暂无提醒记录</view>
+    </view>
+  </view>
+  <view class="group-note">一次授权对应一次微信提醒，关注不会自动开启提醒。</view>
+
+  <view class="settings-group more-group">
+    <view class="setting-row" bindtap="onToggleMore" hover-class="row-pressed" hover-start-time="20" hover-stay-time="60" aria-role="button" aria-expanded="{{moreExpanded}}"><text class="row-title">更多设置</text><text class="chevron {{moreExpanded ? 'chevron-open' : ''}}">›</text></view>
+    <block wx:if="{{moreExpanded}}">
+      <view class="setting-row"><text class="row-title">个性化推荐</text><switch class="setting-switch" checked="{{personalizationEnabled}}" color="#737D9B" disabled="{{privacyBusy}}" bindchange="onPersonalizationChange" /></view>
+      <view class="setting-row" bindtap="onOpenPrivacyContract" hover-class="row-pressed" hover-start-time="20" hover-stay-time="60"><text class="row-title">隐私保护指引</text><text class="chevron">›</text></view>
+      <view class="setting-row" bindtap="onPrivacyInfo" hover-class="row-pressed" hover-start-time="20" hover-stay-time="60"><text class="row-title">数据使用说明</text><text class="chevron">›</text></view>
+      <view class="setting-row" bindtap="onToggleDataManagement" hover-class="row-pressed" hover-start-time="20" hover-stay-time="60"><text class="row-title">数据管理</text><text class="chevron {{dataManagementExpanded ? 'chevron-open' : ''}}">›</text></view>
+      <view wx:if="{{dataManagementExpanded}}" class="management-list">
+        <button class="setting-row action-row" bindtap="onClearRecommendationData" disabled="{{privacyBusy}}" hover-class="row-pressed" hover-start-time="20" hover-stay-time="60"><text class="row-title">清除推荐记录</text><text class="chevron">›</text></button>
+        <button class="setting-row action-row danger-row" bindtap="onDeleteMyData" disabled="{{privacyBusy}}" hover-class="row-pressed" hover-start-time="20" hover-stay-time="60"><text class="row-title">删除全部个人数据</text><text class="chevron">›</text></button>
+      </view>
+      <view class="setting-row" bindtap="onToggleAbout" hover-class="row-pressed" hover-start-time="20" hover-stay-time="60"><text class="row-title">关于活动数据</text><text class="chevron {{aboutExpanded ? 'chevron-open' : ''}}">›</text></view>
+      <view wx:if="{{aboutExpanded}}" class="about-copy">活动信息来自官方公告与公开信息，时间、地点及参与规则以主办方最新公告为准。推荐行为原始日志最多保留 90 天。</view>
+    </block>
+  </view>
+</view>

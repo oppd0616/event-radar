@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "定制你的雷达",
+  "usingComponents": {
+    "t-tag": "tdesign-miniprogram/tag/tag",
+    "t-button": "tdesign-miniprogram/button/button"
+  }
+}

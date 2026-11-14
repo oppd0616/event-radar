@@ -1,0 +1,9 @@
+{
+  "name": "event-radar-miniprogram",
+  "version": "0.1.0",
+  "description": "AI 活动雷达小程序端",
+  "dependencies": {
+    "tdesign-miniprogram": "^1.10.0",
+    "dayjs": "^1.11.13"
+  }
+}

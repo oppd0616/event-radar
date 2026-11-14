@@ -1,0 +1,190 @@
+<view class="ob">
+  <view class="ambient ambient-a"></view>
+  <view class="ambient ambient-b"></view>
+
+  <view class="progress-head">
+    <view class="progress-copy">
+      <text class="step-text">0{{step}} / 03</text>
+      <view class="progress-labels">
+        <text class="progress-label {{step >= 1 ? 'progress-label-active' : ''}}">领域</text>
+        <text class="progress-label {{step >= 2 ? 'progress-label-active' : ''}}">兴趣</text>
+        <text class="progress-label {{step >= 3 ? 'progress-label-active' : ''}}">方式</text>
+      </view>
+    </view>
+    <view class="progress-track">
+      <view class="progress-value step-{{step}}"></view>
+    </view>
+  </view>
+
+  <view class="panel panel-in" wx:if="{{step === 1}}">
+    <view class="ob-kicker">30 秒定制</view>
+    <view class="ob-title">给生活留一点新体验</view>
+    <view class="ob-desc">想学点新东西，也想好好玩。先选喜欢的领域，再找到适合自己的活动。</view>
+    <view class="trust-row">
+      <text>比赛与成长</text><text class="trust-dot">·</text><text>演出与展览</text><text class="trust-dot">·</text><text>自己的节奏</text>
+    </view>
+    <view class="domain-grid">
+      <view
+        wx:for="{{domains}}"
+        wx:key="key"
+        class="domain-card {{item.selected ? 'domain-active' : ''}}"
+        style="animation-delay: {{item.delay}}ms; {{item.selected ? 'border-color:' + item.color + ';background:' + item.bg + ';' : ''}}"
+        data-index="{{index}}"
+        bindtap="onDomainTap"
+      >
+        <view class="domain-card-head">
+          <view class="domain-dot" style="background: {{item.color}};"></view>
+          <view class="domain-check">{{item.selected ? '✓' : '+'}}</view>
+        </view>
+        <view class="domain-label">{{item.label}}</view>
+        <view class="domain-state">{{item.selected ? '已选择' : '点击选择'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel panel-in" wx:elif="{{step === 2}}">
+    <view class="ob-kicker">MAKE IT PERSONAL</view>
+    <view class="ob-title">再具体一点</view>
+    <view class="ob-desc">选想深入的兴趣，也留一点空间给新体验。之后随时可以调整。</view>
+
+    <scroll-view class="domain-tabs" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="domain-tabs-inner">
+        <view
+          wx:for="{{domains}}"
+          wx:key="key"
+          wx:if="{{item.selected}}"
+          class="domain-tab {{activeDomain === item.key ? 'domain-tab-active' : ''}}"
+          data-domain="{{item.key}}"
+          bindtap="onDomainTabTap"
+        >{{item.label}}</view>
+      </view>
+    </scroll-view>
+
+    <block wx:if="{{activeDomain === 'academic'}}">
+      <view class="academic-section-title">先选专业方向</view>
+      <view class="academic-section-copy">决定优先寻找哪一类专业竞赛，可多选。</view>
+      <view class="topic-grid">
+        <view
+          wx:for="{{academicMajorTopics}}"
+          wx:key="key"
+          class="topic-card {{item.selected ? 'topic-active' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="onTopicTap"
+        >
+          <view class="topic-main"><text class="topic-label">{{item.label}}</text></view>
+          <text class="topic-score">匹配专业竞赛</text>
+          <view class="topic-check">{{item.selected ? '✓' : '+'}}</view>
+        </view>
+      </view>
+      <view class="academic-section-title academic-section-gap">再选关注的机会</view>
+      <view class="academic-section-copy">跨专业竞赛也会结合你的专业和成长目标排序。</view>
+      <view class="topic-grid">
+        <view
+          wx:for="{{academicOpportunityTopics}}"
+          wx:key="key"
+          class="topic-card {{item.selected ? 'topic-active' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="onTopicTap"
+        >
+          <view class="topic-main">
+            <text class="topic-label">{{item.label}}</text>
+            <text class="trend-mark" wx:if="{{item.tier === 'trend'}}">新</text>
+          </view>
+          <text class="topic-score">{{item.tier === 'core' ? '高价值机会' : '新兴方向'}}</text>
+          <view class="topic-check">{{item.selected ? '✓' : '+'}}</view>
+        </view>
+      </view>
+    </block>
+
+    <view class="topic-grid" wx:else>
+      <view
+        wx:for="{{topics}}"
+        wx:key="key"
+        class="topic-card {{item.selected ? 'topic-active' : ''}}"
+        style="animation-delay: {{item.delay}}ms;"
+        data-index="{{index}}"
+        bindtap="onTopicTap"
+      >
+        <view class="topic-main">
+          <text class="topic-label">{{item.label}}</text>
+          <text class="trend-mark" wx:if="{{item.tier === 'trend'}}">新</text>
+        </view>
+        <text class="topic-score">{{item.group === 'major' ? '匹配专业竞赛' : (item.tier === 'core' ? '热门活动多' : '新兴趋势')}}</text>
+        <view class="topic-check">{{item.selected ? '✓' : '+'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel panel-in" wx:else>
+    <view class="ob-kicker">FINAL TOUCH</view>
+    <view class="ob-title">你更喜欢怎样参与？</view>
+    <view class="ob-desc">这些选项可以跳过。你可以自主决定是否允许系统根据后续使用反馈优化推荐。</view>
+
+    <view class="option-title">活动形式</view>
+    <view class="pill-list">
+      <view
+        wx:for="{{formats}}"
+        wx:key="key"
+        class="option-pill {{item.selected ? 'option-active' : ''}}"
+        data-index="{{index}}"
+        bindtap="onFormatTap"
+      >{{item.label}}</view>
+    </view>
+
+    <view class="option-title city-title">常用范围</view>
+    <view class="pill-list">
+      <view
+        wx:for="{{cities}}"
+        wx:key="label"
+        class="option-pill {{item.selected ? 'option-active' : ''}}"
+        data-index="{{index}}"
+        bindtap="onCityTap"
+      >{{item.label}}</view>
+    </view>
+
+    <block wx:if="{{academicSelected}}">
+      <view class="option-title city-title">你的成长目标</view>
+      <view class="growth-goal-hint">用于区分保研、求职和作品集需求，不会把同一批竞赛推荐给所有专业。</view>
+      <view class="pill-list">
+        <view
+          wx:for="{{growthGoals}}"
+          wx:key="key"
+          class="option-pill {{item.selected ? 'option-active' : ''}}"
+          data-index="{{index}}"
+          bindtap="onGrowthGoalTap"
+        >{{item.label}}</view>
+      </view>
+    </block>
+
+    <view class="learning-setting">
+      <view class="learning-copy">
+        <view class="learning-title">个性化学习</view>
+        <view class="learning-desc">根据浏览、停留和关注反馈优化排序，可随时在偏好页关闭或清除</view>
+      </view>
+      <switch checked="{{personalizationEnabled}}" color="#2C2C2A" bindchange="onPersonalizationChange" />
+    </view>
+
+    <view class="summary-card">
+      <view class="summary-orbit"></view>
+      <view class="summary-title">专属活动流准备就绪</view>
+      <view class="summary-text">{{selectedDomainCount}} 个领域 · {{selectedTopicCount}} 个具体兴趣</view>
+    </view>
+  </view>
+
+  <view class="ob-actions">
+    <view class="back" wx:if="{{step > 1}}" bindtap="onBack">返回</view>
+    <t-button
+      wx:if="{{step < 3}}"
+      theme="primary"
+      size="large"
+      block
+      custom-style="height: 88rpx; border-radius: 20rpx; font-size: 28rpx; font-weight: 600;"
+      bind:tap="onNext"
+      disabled="{{step === 1 ? selectedDomainCount === 0 : selectedTopicCount === 0}}"
+    >下一步{{step === 1 && selectedDomainCount > 0 ? ' · ' + selectedDomainCount : step === 2 && selectedTopicCount > 0 ? ' · ' + selectedTopicCount : ''}}</t-button>
+    <t-button wx:else theme="primary" size="large" block custom-style="height: 88rpx; border-radius: 20rpx; font-size: 28rpx; font-weight: 600;" bind:tap="onFinish" loading="{{saving}}">
+      {{editing ? '保存兴趣' : '开启我的活动雷达'}}
+    </t-button>
+    <view class="skip" bindtap="onSkip">{{editing ? '取消修改' : '稍后设置'}}</view>
+  </view>
+</view>

@@ -1,0 +1,167 @@
+.card {
+  background: #FFFFFF;
+  border: 1rpx solid rgba(0, 0, 0, 0.07);
+  border-radius: 24rpx;
+  padding: 28rpx 32rpx;
+  margin-bottom: 20rpx;
+}
+
+.card-hover {
+  background: #F7F6F2;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14rpx;
+}
+
+.card-tools {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.more {
+  min-width: 64rpx;
+  height: 64rpx;
+  line-height: 50rpx;
+  text-align: center;
+  color: #706E68;
+  font-size: 30rpx;
+  border-radius: 50%;
+}
+
+.more-pressed {
+  background: #F1EFE8;
+}
+
+.chip {
+  font-size: 20rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 8rpx;
+  letter-spacing: 2rpx;
+}
+
+.countdown {
+  font-size: 22rpx;
+  color: #5F5E5A;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-hot {
+  color: #96525F;
+  font-weight: 500;
+}
+
+.countdown-live {
+  color: #D8443E;
+  font-weight: 600;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #1A1A18;
+  line-height: 1.4;
+  margin-bottom: 8rpx;
+}
+
+.recommend-reason {
+  display: inline-block;
+  margin: 0 0 10rpx;
+  padding: 3rpx 12rpx;
+  border-radius: 8rpx;
+  color: #5F6FA8;
+  background: #EEEFF6;
+  font-size: 20rpx;
+}
+
+.card-sub {
+  font-size: 24rpx;
+  color: #5F5E5A;
+  margin-bottom: 18rpx;
+}
+
+.card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.source {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+}
+
+.dot-ok {
+  background: #3B6D11;
+}
+
+.dot-mid {
+  background: #BA7517;
+}
+
+.source-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 22rpx;
+  color: #706E68;
+}
+
+.hot-badge {
+  font-size: 20rpx;
+  color: #96525F;
+  margin-left: 8rpx;
+}
+
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-width: 126rpx;
+  min-height: 58rpx;
+  box-sizing: border-box;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  background: #2C2C2A;
+  padding: 0 22rpx;
+  border-radius: 999rpx;
+  box-shadow: 0 3rpx 10rpx rgba(0, 0, 0, 0.1);
+  transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
+}
+
+.cta-pressed {
+  background: #000000;
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 7rpx rgba(0, 0, 0, 0.1);
+}
+.card-actions { display: flex; align-items: center; gap: 16rpx; flex: none; }
+.card-follow { display: flex; align-items: center; justify-content: center; gap: 6rpx; min-height: 88rpx; width: 112rpx; border-radius: 16rpx; color: #77766F; font-size: 22rpx; transition: color 120ms ease, background-color 120ms ease, transform 120ms ease; }
+.card-follow-active { color: #727B9E; }
+.card-follow-pressed { background: #EEEFF6; transform: scale(0.97); }
+.card-follow-busy { opacity: .8; }
+.dot, .hot-badge { flex-shrink: 0; }
+.bookmark-mark { display: flex; align-items: center; justify-content: center; }
+.bookmark-mark-pulse { animation: bookmark-confirm 180ms ease-out; }
+@keyframes bookmark-confirm { 0% { transform: scale(.9); } 65% { transform: scale(1.06); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .bookmark-mark-pulse { animation: none; }
+  .card-follow, .cta { transition: none; }
+  .card-follow-pressed, .cta-pressed { transform: none; }
+}
