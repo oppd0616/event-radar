@@ -8,33 +8,17 @@ const db = cloud.database()
 const MAX_HTML_BYTES = 600 * 1024
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024
 const RETRY_INTERVAL = 7 * 24 * 3600000
-const RESOLVER_VERSION = 3
+const RESOLVER_VERSION = 4
 const MAX_SOURCE_PAGES = 5
 
-function isPublicHttpUrl(value) {
-  try {
-    const url = new URL(String(value || ''))
-    if (url.protocol !== 'https:' && url.protocol !== 'http:') return false
-    const host = url.hostname.toLowerCase()
-    if (host === 'localhost' || host.endsWith('.local') || host === '::1') return false
-    const ipv4 = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/)
-    if (!ipv4) return true
-    const parts = ipv4.slice(1).map(Number)
-    if (parts.some((part) => part > 255)) return false
-    return !(parts[0] === 10 || parts[0] === 127 ||
-      (parts[0] === 169 && parts[1] === 254) ||
-      (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) ||
-      (parts[0] === 192 && parts[1] === 168))
-  } catch (e) {
-    return false
-  }
-}
+const { isPublicHttpUrl, publicLookup } = require('./public-network')
 
 function download(url, maxBytes, redirects) {
   return new Promise((resolve, reject) => {
     if (!isPublicHttpUrl(url)) return reject(new Error('unsafe url'))
     const client = String(url).indexOf('https:') === 0 ? https : http
     const request = client.get(url, {
+      lookup: publicLookup,
       headers: {
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 EventRadar/1.0',
         Accept: 'text/html,application/xhtml+xml,image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
