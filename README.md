@@ -104,7 +104,9 @@ npm ci
 ├── miniprogram/           小程序页面、组件与资源
 ├── cloudfunctions/       发现核验、查询、关注、偏好与订阅消息
 ├── shared/               活动身份、阶段状态与推荐等共享逻辑
-├── scripts/              验证、数据审核及部署工具
+├── scripts/              当前验证、数据审核及部署工具（含工具索引）
+│   ├── archive/          历史试验、专项修复与阶段部署
+│   └── assets/           宣传图与参赛材料生成工具
 ├── tools/event-dashboard/ 本地活动数据看板
 └── .github/assets/       README 产品截图
 ```
@@ -118,6 +120,8 @@ npm ci
 node scripts/verify-product-audience.cjs
 node scripts/verify-event-write-quality.js
 ```
+
+工具用途、运行条件与历史归档说明见 [开发工具索引](scripts/README.md)。
 
 数据库导出、凭据、运行备份、报名材料及历史测试产物没有提交。部分历史验证脚本依赖本地测试产物，不能在干净克隆中直接运行。
 

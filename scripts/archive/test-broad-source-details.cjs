@@ -1,0 +1,9 @@
+const fs=require('fs'),path=require('path'),{getText}=require('../../cloudfunctions/fetchEvents/lib/http'),p=require('../../cloudfunctions/fetchEvents/lib/publisher-sources')
+const out=path.resolve(__dirname,'../../output/broad-publisher-source-test-20261027'),report=JSON.parse(fs.readFileSync(path.join(out,'results.json')))
+async function main(){
+ const samples=[report.results[0].rows.find(x=>/卓威/.test(x.title)),report.results[0].rows.find(x=>/TEDx/.test(x.title)),report.results[2].rows.find(x=>/EVA/.test(x.title)),report.results[2].rows.find(x=>/跌落/.test(x.title))],results=[]
+ for(const [i,row] of samples.entries()){const result={listTitle:row.title,url:row.detailUrl};try{const u=new URL(row.detailUrl);u.search='';const r=await getText(u.toString(),{allowedHosts:[u.hostname.endsWith('douban.com')?'douban.com':'huodongxing.com'],timeoutMs:12000,maxBytes:2400000});const item=p.pageItem(r.text,{name:row.title,url:u.toString()});fs.writeFileSync(path.join(out,'detail-'+i+'.html'),r.text);fs.writeFileSync(path.join(out,'detail-'+i+'.txt'),item.description);result.pageTitle=item.title;result.excerpt=item.description.slice(0,9000)}catch(e){result.error=e.message}results.push(result)}
+ fs.writeFileSync(path.join(out,'details.json'),JSON.stringify(results,null,2));console.log(JSON.stringify(results.map(x=>({...x,excerpt:x.excerpt?.slice(0,3600)}))))
+ const rows=report.results.flatMap(x=>x.rows||[]),id=r=>new URL(r.detailUrl).pathname;const unique=[...new Map(rows.map(x=>[id(x),x])).values()];console.log(JSON.stringify({counts:report.results.map(x=>({name:x.name,rows:x.rows?.length,repeat:x.repeat})),unique:unique.length,domains:[...new Set(unique.map(x=>x.domain))],truncated:unique.filter(x=>/\.\.\.|…/.test(x.title)).length}))
+}
+main().catch(e=>{console.error(e.message);process.exitCode=1})
